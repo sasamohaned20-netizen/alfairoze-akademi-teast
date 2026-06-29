@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ALFAIROZE AKADEMI – Skills Lighthouse</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal: #11A7B5;
+  --teal-dark: #0D7C86;
+  --gold: #F4D03F;
+  --white: #FFFFFF;
+  --gray-dark: #1E2A2B;
+  --gray-mid: #3D5153;
+  --bg: #F0FAFB;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(13,124,134,0.13);
+  --header-h: 56px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg);
+  color: var(--gray-dark);
+  direction: rtl;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+#header {
+  height: var(--header-h);
+  min-height: var(--header-h);
+  background: var(--gray-dark);
+  padding: 0 18px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+  z-index: 100;
+}
+.logo-block { display: flex; align-items: center; gap: 10px; }
+.logo-icon { width: 36px; height: 36px; background: var(--gold); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.brand { color: var(--gold); font-size: .92rem; font-weight: 900; }
+.tagline { color: #8ECFD5; font-size: .62rem; }
+.admin-btn { background: rgba(255,255,255,.1); color: var(--white); border: none; border-radius: 8px; padding: 7px 13px; cursor: pointer; font-size: .95rem; }
+
+/* ── PAGES WRAPPER ── */
+#pagesWrap {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+.page {
+  display: none;
+  position: absolute; inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.page.active { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 16px; }
+
+/* ── CARD ── */
+.card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 28px 24px; width: 100%; max-width: 440px; }
+.card-title { font-size: 1.35rem; font-weight: 900; color: var(--teal-dark); margin-bottom: 4px; }
+.card-sub { font-size: .85rem; color: var(--gray-mid); margin-bottom: 20px; }
+.divider { border: none; border-top: 1.5px solid #E0EEF0; margin: 16px 0; }
+label { display: block; font-size: .85rem; font-weight: 700; color: var(--gray-mid); margin-bottom: 5px; }
+input[type="text"], input[type="tel"], input[type="number"], input[type="password"] {
+  width: 100%; padding: 12px 14px; border: 2px solid #C8E8EB;
+  border-radius: 10px; font-size: 1rem; font-family: 'Cairo', sans-serif;
+  color: var(--gray-dark); background: var(--bg); outline: none;
+  transition: border .2s; margin-bottom: 16px;
+}
+input:focus { border-color: var(--teal); background: #fff; }
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 20px; background: var(--teal); color: var(--white);
+  border: none; border-radius: 10px; font-size: .97rem; font-weight: 700;
+  font-family: 'Cairo', sans-serif; cursor: pointer; width: 100%;
+  transition: background .15s; margin-bottom: 10px;
+}
+.btn:active { filter: brightness(.88); }
+.btn-gold { background: var(--gold); color: var(--gray-dark); }
+.btn-outline { background: transparent; color: var(--teal); border: 2px solid var(--teal); }
+.btn-sm { padding: 9px 16px; font-size: .85rem; width: auto; margin-bottom: 0; }
+
+/* ── LEVEL GRID ── */
+.level-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.level-btn {
+  padding: 14px 6px; border-radius: 12px; border: 2.5px solid #C8E8EB;
+  background: var(--bg); font-family: 'Cairo', sans-serif;
+  font-size: .88rem; font-weight: 700; color: var(--gray-dark); cursor: pointer; text-align: center;
+}
+.level-btn.selected { border-color: var(--teal); background: #E0F6F8; color: var(--teal-dark); }
+.lvl-num { display: block; font-size: 1.4rem; color: var(--teal); font-weight: 900; }
+
+/* ═══════════════════════════════════════
+   EXAM PAGE  — full-height, no scroll
+═══════════════════════════════════════ */
+#examPage {
+  background: var(--gray-dark);
+  padding: 0;
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow: hidden;   /* no scroll at all */
+}
+#examPage.active { display: flex; }
+
+/* Timer strip */
+#timerBar {
+  background: var(--teal-dark); padding: 8px 16px;
+  display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0;
+}
+#timerDisplay { font-size: 1.15rem; font-weight: 900; color: var(--gold); font-family: 'Space Grotesk', monospace; min-width: 62px; }
+#timerDisplay.danger { color: #FF6B6B; animation: pulse 1s infinite; }
+@keyframes pulse { 50%{opacity:.45} }
+#progressBar { flex:1; height:9px; background:rgba(255,255,255,.15); border-radius:5px; overflow:hidden; }
+#progressFill { height:100%; background:var(--gold); border-radius:5px; transition:width .35s; }
+#progressLabel { color:#8ECFD5; font-size:.72rem; font-weight:700; white-space:nowrap; }
+
+/* Question area — takes remaining space */
+#questionArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px 8px;
+  overflow: hidden;
+}
+
+/* Question card */
+#qCard {
+  background: var(--white);
+  border-radius: 18px;
+  padding: 16px 20px 14px;
+  width: 100%; max-width: 380px;
+  box-shadow: 0 6px 32px rgba(0,0,0,.35);
+  display: flex; flex-direction: column; align-items: center;
+}
+#qNum { font-size: .72rem; font-weight: 700; color: var(--teal); margin-bottom: 8px; align-self: flex-start; }
+#qDisplay {
+  font-family: 'Space Grotesk', monospace;
+  font-size: clamp(1.3rem, 5vw, 1.8rem);
+  font-weight: 700; color: var(--gray-dark);
+  text-align: right; line-height: 1.65;
+  white-space: pre; direction: ltr;
+  margin-bottom: 12px;
+}
+
+/* Answer box — read-only display, fed by numpad */
+#answerDisplay {
+  width: 100%; padding: 12px 14px;
+  font-size: 1.5rem; font-weight: 900;
+  text-align: center;
+  border: 3px solid var(--teal); border-radius: 12px;
+  background: var(--bg); color: var(--gray-dark);
+  font-family: 'Space Grotesk', monospace;
+  letter-spacing: 3px;
+  min-height: 56px;
+  display: flex; align-items: center; justify-content: center;
+}
+#answerDisplay.has-val { border-color: var(--teal-dark); background: #e8f9fb; }
+#answerDisplay .cursor { display: inline-block; width: 2px; height: 1.2em; background: var(--teal); animation: blink .8s infinite; vertical-align: middle; margin-right: 2px; }
+@keyframes blink { 50%{opacity:0} }
+
+/* Numpad */
+#numpad {
+  width: 100%; max-width: 380px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 10px 16px 12px;
+  flex-shrink: 0;
+}
+.nk {
+  background: #263438;
+  color: var(--white);
+  border: none; border-radius: 12px;
+  font-size: 1.4rem; font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 0;
+  height: 54px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .1s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.nk:active { background: var(--teal); }
+.nk.nk-next { background: var(--gold); color: var(--gray-dark); grid-column: span 1; }
+.nk.nk-next:active { background: #c9a800; }
+.nk.nk-del { background: #3a4f52; font-size: 1.1rem; }
+.nk.nk-del:active { background: #e74c3c; }
+.nk.nk-neg { background: #3a4f52; font-size: 1rem; }
+.nk.nk-neg:active { background: var(--teal); }
+
+/* Next question button full-width bottom */
+#nextBtnWrap {
+  padding: 0 16px 10px;
+  flex-shrink: 0;
+  width: 100%; max-width: 380px;
+  align-self: center;
+}
+#nextBtnWrap .btn { margin-bottom: 0; border-radius: 12px; }
+
+/* ── RESULT ── */
+#resultPage {
+  background: var(--gray-dark);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  justify-content: flex-start !important;  /* override page.active center */
+  padding-top: 24px !important;
+  padding-bottom: 32px !important;
+  align-items: center;
+}
+
+/* Summary card at top */
+#resultSummary {
+  width: 100%; max-width: 440px;
+  background: rgba(255,255,255,.05);
+  border-radius: 20px;
+  padding: 20px 16px 16px;
+  margin-bottom: 16px;
+  display: flex; flex-direction: column; align-items: center;
+}
+.score-ring { width:120px; height:120px; border-radius:50%; border:7px solid var(--gold); background:var(--gray-dark); display:flex; flex-direction:column; align-items:center; justify-content:center; margin:0 auto 10px; flex-shrink:0; }
+.score-pct { font-size:1.9rem; font-weight:900; color:var(--gold); }
+.score-label { font-size:.66rem; color:#8ECFD5; }
+#sName { color:var(--white); font-weight:700; font-size:.9rem; margin-bottom:14px; text-align:center; }
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; }
+.stat-card { background:rgba(255,255,255,.08); border-radius:10px; padding:10px; text-align:center; }
+.stat-num { font-size:1.5rem; font-weight:900; }
+.stat-lbl { font-size:.65rem; color:#8ECFD5; margin-top:2px; }
+.c-correct{color:#4ECDC4} .c-wrong{color:#FF6B6B} .c-skip{color:var(--gold)} .c-white{color:var(--white)}
+
+/* Review section */
+#reviewContainer { width:100%; max-width:440px; margin-bottom:14px; }
+.review-title {
+  color:var(--white); font-size:.88rem; font-weight:700; margin-bottom:8px;
+  padding: 8px 12px; background:rgba(255,255,255,.06); border-radius:10px;
+  display:flex; align-items:center; gap:8px;
+}
+.review-badge {
+  font-size:.7rem; font-weight:700; padding:3px 8px; border-radius:20px; margin-right:auto;
+}
+.rb-correct{background:rgba(78,205,196,.2);color:#4ECDC4;}
+.rb-wrong{background:rgba(255,107,107,.2);color:#FF6B6B;}
+.rb-skip{background:rgba(244,208,63,.2);color:var(--gold);}
+
+.review-section { margin-bottom:12px; }
+.review-section-title {
+  font-size:.75rem; font-weight:700; padding:5px 10px; border-radius:8px;
+  margin-bottom:6px; display:inline-block;
+}
+.rst-correct{background:rgba(78,205,196,.15);color:#4ECDC4;}
+.rst-wrong  {background:rgba(255,107,107,.15);color:#FF6B6B;}
+.rst-skip   {background:rgba(244,208,63,.15); color:var(--gold);}
+
+.review-item {
+  background:rgba(255,255,255,.05); border-radius:10px; padding:10px 14px;
+  margin-bottom:6px; display:flex; align-items:center; gap:12px;
+}
+.r-correct{border-right:3px solid #4ECDC4;}
+.r-wrong  {border-right:3px solid #FF6B6B;}
+.r-skip   {border-right:3px solid var(--gold);}
+.review-q { font-family:'Space Grotesk',monospace; font-size:.72rem; direction:ltr; white-space:pre; color:#8ECFD5; flex:1; line-height:1.5; }
+.review-icon { font-size:1.1rem; flex-shrink:0; }
+.review-ans { text-align:center; flex-shrink:0; }
+.review-ans .ua { font-size:.95rem; font-weight:900; }
+.review-ans .ca { font-size:.62rem; color:#8ECFD5; margin-top:1px; }
+
+.result-btns { display:flex; gap:10px; width:100%; max-width:440px; flex-shrink:0; }
+
+/* ── ADMIN ── */
+#adminOverlay { display:none; position:fixed; inset:0; z-index:300; background:rgba(0,0,0,.75); align-items:center; justify-content:center; }
+#adminOverlay.open { display:flex; }
+.admin-box { background:var(--white); border-radius:var(--radius); padding:24px 20px; width:94%; max-width:500px; max-height:86vh; overflow-y:auto; }
+.admin-title { font-size:1.05rem; font-weight:900; color:var(--teal-dark); margin-bottom:16px; }
+.admin-row { margin-bottom:12px; }
+.admin-row label { margin-bottom:4px; }
+.admin-row input { margin-bottom:0; }
+.admin-btns { display:flex; gap:10px; justify-content:flex-end; margin-top:14px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div class="logo-block">
+    <div class="logo-icon">🏫</div>
+    <div>
+      <div class="brand">ALFAIROZE AKADEMI</div>
+      <div class="tagline">Skills Lighthouse · منارة المهارات</div>
+    </div>
+  </div>
+  <button class="admin-btn" onclick="openAdmin()">⚙</button>
+</div>
+
+<div id="pagesWrap">
+
+<!-- PAGE 1: REGISTRATION -->
+<div class="page active" id="regPage">
+  <div class="card">
+    <div class="card-title">مرحباً بك 👋</div>
+    <div class="card-sub">سجّل بياناتك للبدء في الاختبار</div>
+    <hr class="divider">
+    <label>الاسم الكامل *</label>
+    <input type="text" id="studentName" placeholder="أدخل اسمك الكامل" maxlength="60">
+    <label>رقم الجوال *</label>
+    <input type="tel" id="studentPhone" placeholder="05XXXXXXXX" maxlength="15">
+    <button class="btn" onclick="goToLevels()">متابعة ←</button>
+  </div>
+</div>
+
+<!-- PAGE 2: LEVEL -->
+<div class="page" id="levelPage">
+  <div class="card">
+    <div class="card-title">اختر مستواك 🎯</div>
+    <div class="card-sub">حدد المستوى المناسب ثم ابدأ الاختبار</div>
+    <hr class="divider">
+    <div class="level-grid">
+      <button class="level-btn" onclick="selectLevel('prep')" data-level="prep"><span class="lvl-num">🌱</span>تمهيدي</button>
+      <button class="level-btn" onclick="selectLevel('1')"    data-level="1">  <span class="lvl-num">١</span>المستوى الأول</button>
+      <button class="level-btn" onclick="selectLevel('2')"    data-level="2">  <span class="lvl-num">٢</span>المستوى الثاني</button>
+      <button class="level-btn" onclick="selectLevel('3')"    data-level="3">  <span class="lvl-num">٣</span>المستوى الثالث</button>
+      <button class="level-btn" onclick="selectLevel('4')"    data-level="4">  <span class="lvl-num">٤</span>المستوى الرابع</button>
+      <button class="level-btn" onclick="selectLevel('5')"    data-level="5">  <span class="lvl-num">٥</span>المستوى الخامس</button>
+    </div>
+    <button class="btn btn-gold" id="startBtn" disabled onclick="startExam()">ابدأ الاختبار ▶</button>
+    <button class="btn btn-outline" onclick="showPage('regPage')">← رجوع</button>
+  </div>
+</div>
+
+<!-- PAGE 3: EXAM -->
+<div class="page" id="examPage">
+
+  <!-- Timer -->
+  <div id="timerBar">
+    <div id="timerDisplay">05:00</div>
+    <div id="progressBar"><div id="progressFill" style="width:0%"></div></div>
+    <div id="progressLabel">1 / 100</div>
+  </div>
+
+  <!-- Question -->
+  <div id="questionArea">
+    <div id="qCard">
+      <div id="qNum">السؤال 1 من 100</div>
+      <div id="qDisplay"></div>
+      <div id="answerDisplay"><span class="cursor"></span></div>
+    </div>
+  </div>
+
+  <!-- Numpad  1-2-3 / 4-5-6 / 7-8-9 / ± - 0 - ⌫ / التالي -->
+  <div id="numpad">
+    <button class="nk" onclick="nkPress(1)">1</button>
+    <button class="nk" onclick="nkPress(2)">2</button>
+    <button class="nk" onclick="nkPress(3)">3</button>
+    <button class="nk" onclick="nkPress(4)">4</button>
+    <button class="nk" onclick="nkPress(5)">5</button>
+    <button class="nk" onclick="nkPress(6)">6</button>
+    <button class="nk" onclick="nkPress(7)">7</button>
+    <button class="nk" onclick="nkPress(8)">8</button>
+    <button class="nk" onclick="nkPress(9)">9</button>
+    <button class="nk nk-neg" onclick="nkToggle()">±</button>
+    <button class="nk" onclick="nkPress(0)">0</button>
+    <button class="nk nk-del" onclick="nkDel()">⌫</button>
+  </div>
+
+  <!-- Next button -->
+  <div id="nextBtnWrap">
+    <button class="btn btn-gold" onclick="nextQ()">التالي ←</button>
+  </div>
+
+</div>
+
+<!-- PAGE 4: RESULT -->
+<div class="page" id="resultPage">
+
+  <!-- Summary card -->
+  <div id="resultSummary">
+    <div class="score-ring">
+      <div class="score-pct" id="sPct">0%</div>
+      <div class="score-label">النتيجة</div>
+    </div>
+    <div id="sName"></div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num c-white"   id="rTotal">0</div><div class="stat-lbl">إجمالي الأسئلة</div></div>
+      <div class="stat-card"><div class="stat-num c-correct" id="rCorrect">0</div><div class="stat-lbl">✔ إجابات صحيحة</div></div>
+      <div class="stat-card"><div class="stat-num c-wrong"   id="rWrong">0</div><div class="stat-lbl">✘ إجابات خاطئة</div></div>
+      <div class="stat-card"><div class="stat-num c-skip"    id="rSkip">0</div><div class="stat-lbl">— بدون إجابة</div></div>
+    </div>
+  </div>
+
+  <!-- Review grouped by status -->
+  <div id="reviewContainer">
+    <div class="review-title">📋 مراجعة الأسئلة</div>
+    <!-- correct group -->
+    <div class="review-section" id="secCorrect"></div>
+    <!-- wrong group -->
+    <div class="review-section" id="secWrong"></div>
+    <!-- skip group -->
+    <div class="review-section" id="secSkip"></div>
+  </div>
+
+  <div class="result-btns">
+    <button class="btn btn-gold" onclick="retake()">إعادة الاختبار</button>
+    <button class="btn btn-outline" style="border-color:#fff;color:#fff" onclick="newStudent()">طالب جديد</button>
+  </div>
+
+</div>
+
+</div><!-- /pagesWrap -->
+
+<!-- ADMIN -->
+<div id="adminOverlay">
+  <div class="admin-box">
+    <div class="admin-title">⚙ لوحة الإدارة</div>
+    <div id="passRow">
+      <div class="admin-row">
+        <label>كلمة المرور</label>
+        <input type="password" id="adminPass" placeholder="أدخل كلمة المرور" onkeydown="if(event.key==='Enter')unlockAdmin()">
+      </div>
+      <button class="btn btn-sm" style="width:auto" onclick="unlockAdmin()">دخول</button>
+    </div>
+    <div id="adminContent" style="display:none">
+      <hr class="divider">
+      <div class="admin-row"><label>عدد الأسئلة</label><input type="number" id="cfgCount" min="5" max="200" value="100"></div>
+      <div class="admin-row"><label>وقت الاختبار (دقائق)</label><input type="number" id="cfgTime" min="1" max="60" value="5"></div>
+      <div class="admin-row"><label>كلمة مرور جديدة (فارغة = بدون تغيير)</label><input type="password" id="cfgPass" placeholder="كلمة مرور جديدة"></div>
+      <div class="admin-btns">
+        <button class="btn btn-outline btn-sm" onclick="closeAdmin()">إلغاء</button>
+        <button class="btn btn-sm" onclick="saveAdmin()">حفظ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════
+let CFG = { count:100, minutes:5, password:'admin123' };
+try{ const s=JSON.parse(localStorage.getItem('alfa_cfg')); if(s) CFG=s; }catch(e){}
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let student={}, selectedLevel=null;
+let questions=[], answers=[], currentQ=0;
+let timerID=null, secondsLeft=0;
+let currentInput='';   // string built by numpad
+
+// ══════════════════════════════════════════
+//  LEVEL NAMES
+// ══════════════════════════════════════════
+const LEVEL_NAMES={prep:'تمهيدي','1':'المستوى الأول','2':'المستوى الثاني','3':'المستوى الثالث','4':'المستوى الرابع','5':'المستوى الخامس'};
+
+// ══════════════════════════════════════════
+//  QUESTION GENERATOR
+// ══════════════════════════════════════════
+function rnd(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+
+function generateQuestions(level,count){
+  const qs=[];
+  while(qs.length<count){ const q=makeQ(level); if(q) qs.push(q); }
+  return qs;
+}
+
+function makeQ(level){
+  for(let a=0;a<500;a++){ const q=tryMake(level); if(q) return q; }
+  return null;
+}
+
+function tryMake(level){
+  let rows=[],running=0;
+
+  if(level==='prep'){
+    const len=rnd(4,5);
+    const first=rnd(1,9); rows.push(String(first)); running=first;
+    for(let i=1;i<len;i++){
+      const num=rnd(1,9); const sign=Math.random()<.5?1:-1;
+      const next=running+sign*num; if(next<0||next>9) return null;
+      rows.push((sign>0?'+':'-')+num); running=next;
+    }
+    return {rows,answer:running};
+  }
+  if(level==='1'){
+    const len=rnd(3,4);
+    const first=rnd(1,9); rows.push(String(first)); running=first;
+    for(let i=1;i<len;i++){
+      const num=rnd(1,9); const sign=Math.random()<.5?1:-1;
+      const next=running+sign*num; if(next<0||next>9) return null;
+      rows.push((sign>0?'+':'-')+num); running=next;
+    }
+    return {rows,answer:running};
+  }
+  if(level==='2'){
+    const len=rnd(4,5);
+    const first=rnd(1,9); rows.push(String(first)); running=first;
+    for(let i=1;i<len;i++){
+      const num=Math.random()<.6?rnd(5,9):rnd(1,4); const sign=Math.random()<.5?1:-1;
+      const next=running+sign*num; if(next<0||next>9) return null;
+      rows.push((sign>0?'+':'-')+num); running=next;
+    }
+    return {rows,answer:running};
+  }
+  if(level==='3'){
+    const len=rnd(4,5);
+    const first=rnd(1,9); rows.push(String(first)); running=first;
+    for(let i=1;i<len;i++){
+      const r=Math.random(); let num=r<.4?9:r<.65?5:rnd(1,8);
+      const sign=Math.random()<.5?1:-1;
+      const next=running+sign*num; if(next<0||next>9) return null;
+      rows.push((sign>0?'+':'-')+num); running=next;
+    }
+    return {rows,answer:running};
+  }
+  if(level==='4'){
+    const len=rnd(4,5);
+    const first=rnd(10,50); rows.push(String(first)); running=first;
+    for(let i=1;i<len;i++){
+      const isD=Math.random()<.4; const num=isD?rnd(10,20):rnd(1,9);
+      const sign=Math.random()<.5?1:-1;
+      const next=running+sign*num; if(next<0||next>99) return null;
+      rows.push((sign>0?'+':'-')+num); running=next;
+    }
+    return {rows,answer:running};
+  }
+  if(level==='5'){
+    const len=rnd(4,5); const hi=Math.random()<.5;
+    const first=hi?rnd(50,99):rnd(10,50); rows.push(String(first)); running=first;
+    for(let i=1;i<len;i++){
+      const num=hi?rnd(10,99):rnd(10,50); const sign=Math.random()<.5?1:-1;
+      const next=running+sign*num; if(next<0||next>999) return null;
+      rows.push((sign>0?'+':'-')+num); running=next;
+    }
+    return {rows,answer:running};
+  }
+  return null;
+}
+
+// ══════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goToLevels(){
+  const name=document.getElementById('studentName').value.trim();
+  const phone=document.getElementById('studentPhone').value.trim();
+  if(!name){alert('الرجاء إدخال الاسم الكامل');return;}
+  if(!phone){alert('الرجاء إدخال رقم الجوال');return;}
+  student={name,phone}; showPage('levelPage');
+}
+
+function selectLevel(lvl){
+  selectedLevel=lvl;
+  document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('selected'));
+  document.querySelector(`.level-btn[data-level="${lvl}"]`).classList.add('selected');
+  document.getElementById('startBtn').disabled=false;
+}
+
+// ══════════════════════════════════════════
+//  EXAM
+// ══════════════════════════════════════════
+function startExam(){
+  const saved=loadProgress();
+  if(saved&&saved.level===selectedLevel&&saved.studentName===student.name){
+    if(confirm('يوجد اختبار محفوظ. هل تريد المتابعة منه؟')){restoreExam(saved);return;}
+  }
+  clearProgress();
+  questions=generateQuestions(selectedLevel,CFG.count);
+  answers=new Array(questions.length).fill(null);
+  currentQ=0; currentInput='';
+  showPage('examPage');
+  startTimer(CFG.minutes*60);
+  renderQ();
+}
+
+function startTimer(secs){
+  secondsLeft=secs; clearInterval(timerID); updateTimerUI();
+  timerID=setInterval(()=>{
+    secondsLeft--; updateTimerUI();
+    if(secondsLeft<=0){clearInterval(timerID);doSubmit();}
+  },1000);
+}
+
+function updateTimerUI(){
+  const m=Math.floor(secondsLeft/60),s=secondsLeft%60;
+  const el=document.getElementById('timerDisplay');
+  el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  el.classList.toggle('danger',secondsLeft<=60);
+}
+
+function renderQ(){
+  const q=questions[currentQ];
+  document.getElementById('qNum').textContent=`السؤال ${currentQ+1} من ${questions.length}`;
+
+  // Build vertical display
+  const maxLen=Math.max(...q.rows.map(r=>String(r).replace(/^[+-]/,'').length));
+  let lines='';
+  q.rows.forEach((r,i)=>{
+    const raw=String(r);
+    const sign=raw.startsWith('-')?'-':(i===0?' ':'+');
+    const num=raw.replace(/^[+-]/,'');
+    lines+=sign+' '+num.padStart(maxLen,' ')+'\n';
+    if(i===q.rows.length-1) lines+='─'.repeat(maxLen+2)+'\n';
+  });
+  document.getElementById('qDisplay').textContent=lines;
+
+  // Restore saved answer or clear
+  currentInput = answers[currentQ]!==null ? String(answers[currentQ]) : '';
+  updateAnswerDisplay();
+
+  // Progress
+  const done=answers.filter(a=>a!==null).length;
+  document.getElementById('progressFill').style.width=(done/questions.length*100)+'%';
+  document.getElementById('progressLabel').textContent=(currentQ+1)+' / '+questions.length;
+  saveProgress();
+}
+
+function updateAnswerDisplay(){
+  const el=document.getElementById('answerDisplay');
+  if(currentInput===''){
+    el.innerHTML='<span class="cursor"></span>';
+    el.classList.remove('has-val');
+  } else {
+    el.textContent=currentInput;
+    el.classList.add('has-val');
+  }
+}
+
+function saveAns(){
+  if(currentInput!=='') answers[currentQ]=Number(currentInput);
+  else answers[currentQ]=null;
+}
+
+function nextQ(){
+  saveAns();
+  if(currentQ<questions.length-1){ currentQ++; renderQ(); }
+  else { doSubmit(); }
+}
+
+// ══════════════════════════════════════════
+//  NUMPAD
+// ══════════════════════════════════════════
+function nkPress(d){
+  // max 4 digits (handles up to 999 + possible negative)
+  const digits=currentInput.replace('-','');
+  if(digits.length>=4) return;
+  currentInput+=String(d);
+  updateAnswerDisplay();
+}
+function nkDel(){
+  currentInput=currentInput.slice(0,-1);
+  updateAnswerDisplay();
+}
+function nkToggle(){
+  if(currentInput==='') return;
+  if(currentInput.startsWith('-')) currentInput=currentInput.slice(1);
+  else currentInput='-'+currentInput;
+  updateAnswerDisplay();
+}
+
+// ══════════════════════════════════════════
+//  SUBMIT
+// ══════════════════════════════════════════
+function doSubmit(){
+  saveAns();
+  clearInterval(timerID);
+  clearProgress();
+  showResults();
+  showPage('resultPage');
+}
+
+// ══════════════════════════════════════════
+//  RESULTS
+// ══════════════════════════════════════════
+function showResults(){
+  let correct=0,wrong=0,skip=0;
+  const total=questions.length;
+  document.getElementById('sName').textContent=student.name+' — '+(LEVEL_NAMES[selectedLevel]||'');
+
+  const groups={correct:[],wrong:[],skip:[]};
+
+  questions.forEach((q,i)=>{
+    const ua=answers[i], ca=q.answer;
+    let status;
+    if(ua===null){skip++;status='skip';}
+    else if(Number(ua)===Number(ca)){correct++;status='correct';}
+    else{wrong++;status='wrong';}
+    groups[status].push({q,ua,ca,idx:i+1});
+  });
+
+  document.getElementById('rTotal').textContent=total;
+  document.getElementById('rCorrect').textContent=correct;
+  document.getElementById('rWrong').textContent=wrong;
+  document.getElementById('rSkip').textContent=skip;
+  document.getElementById('sPct').textContent=Math.round((correct/total)*100)+'%';
+
+  // Render each group
+  const cfg={
+    correct:{icon:'✔',label:'الإجابات الصحيحة',cls:'rst-correct',color:'#4ECDC4',badgeCls:'rb-correct'},
+    wrong:  {icon:'✘',label:'الإجابات الخاطئة', cls:'rst-wrong',  color:'#FF6B6B',badgeCls:'rb-wrong'},
+    skip:   {icon:'—',label:'بدون إجابة',        cls:'rst-skip',   color:'#F4D03F',badgeCls:'rb-skip'}
+  };
+
+  ['correct','wrong','skip'].forEach(status=>{
+    const sec=document.getElementById('sec'+status.charAt(0).toUpperCase()+status.slice(1));
+    sec.innerHTML='';
+    const items=groups[status];
+    if(!items.length) return;
+
+    const c=cfg[status];
+    const hdr=document.createElement('div');
+    hdr.className='review-title';
+    hdr.innerHTML=`${c.icon} ${c.label} <span class="review-badge ${c.badgeCls}">${items.length}</span>`;
+    sec.appendChild(hdr);
+
+    items.forEach(({q,ua,ca,idx})=>{
+      // Build question text
+      const maxLen=Math.max(...q.rows.map(r=>String(r).replace(/^[+-]/,'').length));
+      let lines='';
+      q.rows.forEach((r,i)=>{
+        const raw=String(r);
+        const sign=raw.startsWith('-')?'-':(i===0?' ':'+');
+        const num=raw.replace(/^[+-]/,'');
+        lines+=sign+' '+num.padStart(maxLen,' ')+'\n';
+        if(i===q.rows.length-1) lines+='─'.repeat(maxLen+2);
+      });
+
+      const div=document.createElement('div');
+      div.className=`review-item r-${status}`;
+      div.innerHTML=`
+        <div class="review-icon">${c.icon}</div>
+        <div style="font-size:.65rem;color:#6a8a8d;min-width:22px;text-align:center">#${idx}</div>
+        <div class="review-q">${lines}</div>
+        <div class="review-ans">
+          <div class="ua" style="color:${c.color}">${ua??'—'}</div>
+          ${status!=='correct'?`<div class="ca">✔ ${ca}</div>`:''}
+        </div>`;
+      sec.appendChild(div);
+    });
+  });
+}
+
+function retake(){ clearProgress(); questions=[];answers=[]; showPage('levelPage'); }
+function newStudent(){
+  clearProgress(); questions=[];answers=[];selectedLevel=null;
+  document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('startBtn').disabled=true;
+  document.getElementById('studentName').value='';
+  document.getElementById('studentPhone').value='';
+  showPage('regPage');
+}
+
+// ══════════════════════════════════════════
+//  LOCAL STORAGE
+// ══════════════════════════════════════════
+function saveProgress(){
+  try{localStorage.setItem('alfa_progress',JSON.stringify({studentName:student.name,level:selectedLevel,questions,answers,currentQ,secondsLeft}));}catch(e){}
+}
+function loadProgress(){ try{return JSON.parse(localStorage.getItem('alfa_progress'));}catch(e){return null;} }
+function clearProgress(){ try{localStorage.removeItem('alfa_progress');}catch(e){} }
+function restoreExam(s){
+  questions=s.questions;answers=s.answers;currentQ=s.currentQ;
+  currentInput=answers[currentQ]!==null?String(answers[currentQ]):'';
+  showPage('examPage');startTimer(s.secondsLeft);renderQ();
+}
+
+// ══════════════════════════════════════════
+//  SECURITY
+// ══════════════════════════════════════════
+document.addEventListener('contextmenu',e=>{if(document.getElementById('examPage').classList.contains('active'))e.preventDefault();});
+document.addEventListener('copy',e=>{if(document.getElementById('examPage').classList.contains('active'))e.preventDefault();});
+window.addEventListener('beforeunload',e=>{
+  if(document.getElementById('examPage').classList.contains('active')){saveProgress();e.preventDefault();e.returnValue='';}
+});
+// Physical keyboard support during exam
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('examPage').classList.contains('active')) return;
+  if(e.key>='0'&&e.key<='9') nkPress(Number(e.key));
+  if(e.key==='Backspace') nkDel();
+  if(e.key==='-') nkToggle();
+  if(e.key==='Enter') nextQ();
+});
+
+// ══════════════════════════════════════════
+//  ADMIN
+// ══════════════════════════════════════════
+function openAdmin(){
+  document.getElementById('adminPass').value='';
+  document.getElementById('adminContent').style.display='none';
+  document.getElementById('passRow').style.display='block';
+  document.getElementById('adminOverlay').classList.add('open');
+}
+function closeAdmin(){ document.getElementById('adminOverlay').classList.remove('open'); }
+document.getElementById('adminOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('adminOverlay'))closeAdmin();});
+function unlockAdmin(){
+  if(document.getElementById('adminPass').value===CFG.password){
+    document.getElementById('passRow').style.display='none';
+    document.getElementById('cfgCount').value=CFG.count;
+    document.getElementById('cfgTime').value=CFG.minutes;
+    document.getElementById('cfgPass').value='';
+    document.getElementById('adminContent').style.display='block';
+  } else alert('كلمة المرور خاطئة');
+}
+function saveAdmin(){
+  CFG.count=Math.min(200,Math.max(5,parseInt(document.getElementById('cfgCount').value)||100));
+  CFG.minutes=Math.min(60,Math.max(1,parseInt(document.getElementById('cfgTime').value)||5));
+  const np=document.getElementById('cfgPass').value.trim();
+  if(np) CFG.password=np;
+  try{localStorage.setItem('alfa_cfg',JSON.stringify(CFG));}catch(e){}
+  closeAdmin(); alert('✔ تم حفظ الإعدادات');
+}
+</script>
+</body>
+</html>
