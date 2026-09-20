@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import confetti from 'canvas-confetti';
-import { Award, CheckCircle2, XCircle, MinusCircle, RotateCcw, Send, Clock } from 'lucide-react';
+import { Award, CheckCircle2, XCircle, MinusCircle, Send, Clock } from 'lucide-react';
 import { ExamResult } from '../types/exam';
 import { EXAM_CONFIG } from '../config/examConfig';
 
 interface ResultScreenProps {
   result: ExamResult;
-  onRestart: () => void;
+  onRestart?: () => void;
 }
 
-export const ResultScreen: React.FC<ResultScreenProps> = ({ result, onRestart }) => {
+export const ResultScreen: React.FC<ResultScreenProps> = ({ result }) => {
   useEffect(() => {
     // Launch celebratory confetti when the student achieved points
     try {
@@ -124,16 +124,16 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({ result, onRestart })
         </div>
       </div>
 
-      {/* Bottom CTA: Retake or select another level */}
+      {/* Closing Card (Replaced restart button) */}
       <div className="w-full pt-4 pb-2">
-        <button
-          type="button"
-          onClick={onRestart}
-          className="w-full py-4 px-6 bg-gradient-to-r from-brand-teal to-brand-darkTeal text-white font-extrabold text-lg rounded-2xl shadow-lg shadow-brand-teal/25 hover:opacity-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
-        >
-          <RotateCcw className="w-5 h-5" />
-          <span>بدء اختبار جديد</span>
-        </button>
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm text-center">
+          <p className="text-sm font-bold text-brand-darkTeal mb-1">
+            ✨ تتمنى لك أكاديمية الفيروز دوام التفوق والنجاح ✨
+          </p>
+          <p className="text-xs text-brand-muted">
+            تم تسجيل نتيجتك بنجاح، يمكنك الآن إغلاق الصفحة بأمان.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -24,6 +24,7 @@ export interface LevelInfo {
 
 export interface ExamState {
   studentName: string;
+  studentPhone?: string;
   level: LevelInfo;
   questions: Question[];
   currentQuestionIndex: number;
@@ -36,6 +37,7 @@ export interface ExamState {
 
 export interface ExamResult {
   studentName: string;
+  studentPhone?: string;
   level: LevelInfo;
   totalQuestions: number;
   answeredQuestions: number;

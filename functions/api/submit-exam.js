@@ -5,6 +5,7 @@ export async function onRequestPost(context) {
 
     const {
       studentName,
+      studentPhone,
       levelTitleAr,
       totalQuestions = 100,
       answeredQuestions = 0,
@@ -24,6 +25,7 @@ export async function onRequestPost(context) {
     }
 
     const cleanName = studentName.trim();
+    const cleanPhone = studentPhone ? String(studentPhone).trim() : 'غير مسجل';
     const cleanLevel = levelTitleAr || 'المستوى غير محدد';
     const statusText =
       submissionType === 'timeout'
@@ -35,6 +37,9 @@ export async function onRequestPost(context) {
 
 👤 الطالب:
 ${cleanName}
+
+📱 رقم الهاتف:
+${cleanPhone}
 
 📚 المستوى:
 ${cleanLevel}

@@ -20,6 +20,7 @@ app.post('/api/submit-exam', async (req, res) => {
   try {
     const {
       studentName,
+      studentPhone,
       levelTitleAr,
       totalQuestions = 100,
       answeredQuestions = 0,
@@ -36,6 +37,7 @@ app.post('/api/submit-exam', async (req, res) => {
     }
 
     const cleanName = studentName.trim();
+    const cleanPhone = studentPhone ? String(studentPhone).trim() : 'غير مسجل';
     const cleanLevel = levelTitleAr || 'المستوى غير محدد';
     const statusText =
       submissionType === 'timeout'
@@ -47,6 +49,9 @@ app.post('/api/submit-exam', async (req, res) => {
 
 👤 الطالب:
 ${cleanName}
+
+📱 رقم الهاتف:
+${cleanPhone}
 
 📚 المستوى:
 ${cleanLevel}

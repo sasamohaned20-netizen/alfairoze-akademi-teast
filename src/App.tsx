@@ -11,6 +11,7 @@ import { EXAM_CONFIG } from './config/examConfig';
 export const App: React.FC = () => {
   const [screen, setScreen] = useState<ScreenState>('welcome');
   const [studentName, setStudentName] = useState<string>('');
+  const [studentPhone, setStudentPhone] = useState<string>('');
   const [selectedLevel, setSelectedLevel] = useState<LevelInfo | null>(null);
   const [examQuestions, setExamQuestions] = useState<Question[]>([]);
   const [examResult, setExamResult] = useState<ExamResult | null>(null);
@@ -29,6 +30,7 @@ export const App: React.FC = () => {
       questions: Question[],
       answers: Record<number, string>,
       name: string,
+      phone: string,
       level: LevelInfo,
       submissionType: 'timeout' | 'manual',
       timeSpent: number
@@ -55,6 +57,7 @@ export const App: React.FC = () => {
 
       return {
         studentName: name,
+        studentPhone: phone,
         level,
         totalQuestions,
         answeredQuestions: answeredCount,
@@ -80,6 +83,7 @@ export const App: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           studentName: result.studentName,
+          studentPhone: result.studentPhone,
           levelId: result.level.id,
           levelTitleAr: result.level.titleAr,
           totalQuestions: result.totalQuestions,
@@ -112,6 +116,7 @@ export const App: React.FC = () => {
             if (elapsed < EXAM_CONFIG.durationSeconds) {
               // Session still active! Restore and resume
               setStudentName(data.studentName);
+              setStudentPhone(data.studentPhone || '');
               setSelectedLevel(level);
               setExamQuestions(data.questions);
               setSavedAnswers(data.answers || {});
@@ -126,11 +131,13 @@ export const App: React.FC = () => {
                 data.questions,
                 data.answers || {},
                 data.studentName,
+                data.studentPhone || '',
                 level,
                 'timeout',
                 EXAM_CONFIG.durationSeconds
               );
               setStudentName(data.studentName);
+              setStudentPhone(data.studentPhone || '');
               setSelectedLevel(level);
               setExamResult(result);
               setScreen('result');
@@ -152,8 +159,9 @@ export const App: React.FC = () => {
   };
 
   // Handler: Student Info Submitted
-  const handleStudentSubmit = (name: string) => {
+  const handleStudentSubmit = (name: string, phone: string) => {
     setStudentName(name);
+    setStudentPhone(phone);
     setScreen('level-select');
   };
 
@@ -185,6 +193,7 @@ export const App: React.FC = () => {
       examQuestions,
       answers,
       studentName,
+      studentPhone,
       selectedLevel,
       submissionType,
       timeSpent
@@ -195,18 +204,6 @@ export const App: React.FC = () => {
     sendTelegramNotification(result);
   };
 
-  // Handler: Restart Exam
-  const handleRestart = () => {
-    sessionStorage.removeItem(EXAM_CONFIG.storageKey);
-    setExamResult(null);
-    setExamQuestions([]);
-    setSavedAnswers({});
-    setSavedIndex(0);
-    setSavedStartTime(undefined);
-    // Keep student name and return to level selection
-    setScreen('level-select');
-  };
-
   return (
     <div className="w-full min-h-[100dvh] bg-brand-bg">
       {screen === 'welcome' && <WelcomeScreen onStart={handleStart} />}
@@ -214,6 +211,7 @@ export const App: React.FC = () => {
       {screen === 'student-info' && (
         <StudentInfoScreen
           initialName={studentName}
+          initialPhone={studentPhone}
           onSubmit={handleStudentSubmit}
           onBack={() => setScreen('welcome')}
         />
@@ -240,7 +238,7 @@ export const App: React.FC = () => {
       )}
 
       {screen === 'result' && examResult && (
-        <ResultScreen result={examResult} onRestart={handleRestart} />
+        <ResultScreen result={examResult} />
       )}
     </div>
   );
