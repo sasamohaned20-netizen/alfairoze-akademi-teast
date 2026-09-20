@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Cairo', Tajawal, system-ui, -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Prevent text selection and unwanted iOS zoom/pan during fast exam interaction */
+html, body {
+  user-select: none;
+  -webkit-user-select: none;
+  overscroll-behavior: none;
+}
+
+/* Custom keypad button styling */
+.keypad-btn {
+  @apply relative flex items-center justify-center rounded-2xl font-bold text-2xl select-none transition-all duration-75 active:scale-95 shadow-sm;
+  touch-action: manipulation;
+}
+
+/* Mental math column number styling */
+.soroban-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Custom scrollbar hiding */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
