@@ -232,38 +232,47 @@ export const ExamScreen: React.FC<ExamScreenProps> = ({
         <div className="w-full bg-white rounded-3xl p-4 sm:p-5 shadow-lg shadow-slate-200/50 border border-slate-100 flex flex-col items-center">
           {currentQuestion ? (
             <div className="w-full max-w-[200px] flex flex-col items-center justify-center font-mono">
-              {/* Stack of numbers */}
-              <div className="w-full flex flex-col items-center space-y-0.5 mb-3">
-                {currentQuestion.rows.map((num, i) => {
-                  const isNegative = num < 0;
-                  const displayValue = Math.abs(num);
-                  const showPlus = i > 0 && !isNegative;
+              {/* If multiplication expression exists (e.g. "56 × 4"), render expression */}
+              {currentQuestion.expression ? (
+                <div className="w-full flex items-center justify-center py-4 mb-2" dir="ltr">
+                  <span className="text-3xl sm:text-4xl font-black tracking-widest text-brand-slate font-mono">
+                    {currentQuestion.expression}
+                  </span>
+                </div>
+              ) : currentQuestion.rows ? (
+                /* Stack of numbers */
+                <div className="w-full flex flex-col items-center space-y-0.5 mb-3">
+                  {currentQuestion.rows.map((num, i) => {
+                    const isNegative = num < 0;
+                    const displayValue = Math.abs(num);
+                    const showPlus = i > 0 && !isNegative;
 
-                  return (
-                    <div
-                      key={i}
-                      className="w-full flex items-center justify-between text-2xl sm:text-3xl font-black tracking-wider text-brand-slate py-0.5 px-3"
-                      dir="ltr"
-                    >
-                      {/* Sign indicator */}
-                      <span className="w-6 text-center text-lg sm:text-xl font-bold">
-                        {isNegative ? (
-                          <span className="text-rose-500 font-extrabold">-</span>
-                        ) : showPlus ? (
-                          <span className="text-teal-600 font-bold">+</span>
-                        ) : (
-                          <span className="text-transparent"> </span>
-                        )}
-                      </span>
+                    return (
+                      <div
+                        key={i}
+                        className="w-full flex items-center justify-between text-2xl sm:text-3xl font-black tracking-wider text-brand-slate py-0.5 px-3"
+                        dir="ltr"
+                      >
+                        {/* Sign indicator */}
+                        <span className="w-6 text-center text-lg sm:text-xl font-bold">
+                          {isNegative ? (
+                            <span className="text-rose-500 font-extrabold">-</span>
+                          ) : showPlus ? (
+                            <span className="text-teal-600 font-bold">+</span>
+                          ) : (
+                            <span className="text-transparent"> </span>
+                          )}
+                        </span>
 
-                      {/* Number value */}
-                      <span className="soroban-num text-right flex-1 text-2xl sm:text-3xl font-extrabold">
-                        {displayValue}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+                        {/* Number value */}
+                        <span className="soroban-num text-right flex-1 text-2xl sm:text-3xl font-extrabold">
+                          {displayValue}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : null}
 
               {/* Dividing separator line */}
               <div className="w-full h-0.5 bg-slate-300 rounded-full mb-3" />

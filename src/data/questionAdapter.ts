@@ -74,27 +74,45 @@ export const AVAILABLE_LEVELS: LevelInfo[] = [
 ];
 
 /**
- * Adapter map to extract question array regardless of the json key used
+ * Adapter map to extract question array regardless of whether it's a flat array or categorized objects
  */
 function extractQuestions(data: unknown): RawQuestion[] {
   if (!data || typeof data !== 'object') return [];
-  const obj = data as Record<string, unknown>;
+  const results: RawQuestion[] = [];
 
-  // Check common keys
-  for (const key of ['level_0', 'level_1', 'level_2', 'level_3', 'level_4', 'level_5', 'questions', 'data']) {
-    if (Array.isArray(obj[key])) {
-      return obj[key] as RawQuestion[];
+  function traverse(obj: unknown) {
+    if (!obj || typeof obj !== 'object') return;
+
+    if (Array.isArray(obj)) {
+      if (
+        obj.length > 0 &&
+        obj[0] &&
+        typeof obj[0] === 'object' &&
+        typeof (obj[0] as RawQuestion).answer === 'number' &&
+        (Array.isArray((obj[0] as RawQuestion).rows) || typeof (obj[0] as RawQuestion).expression === 'string')
+      ) {
+        results.push(...(obj as RawQuestion[]));
+        return;
+      }
+      for (const item of obj) {
+        traverse(item);
+      }
+      return;
+    }
+
+    const record = obj as Record<string, unknown>;
+    if (Array.isArray(record.problems)) {
+      results.push(...(record.problems as RawQuestion[]));
+      return;
+    }
+
+    for (const val of Object.values(record)) {
+      traverse(val);
     }
   }
 
-  // Fallback: check the first array property found
-  for (const val of Object.values(obj)) {
-    if (Array.isArray(val)) {
-      return val as RawQuestion[];
-    }
-  }
-
-  return [];
+  traverse(data);
+  return results;
 }
 
 const LEVEL_DATA_MAP: Record<number, RawQuestion[]> = {
@@ -138,6 +156,7 @@ export function getExamQuestionsForLevel(levelId: number, count = EXAM_CONFIG.qu
     id: index + 1,
     originalId: q.id,
     rows: q.rows,
+    expression: q.expression,
     answer: q.answer,
   }));
 }

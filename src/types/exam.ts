@@ -1,13 +1,15 @@
 export interface RawQuestion {
   id: number;
-  rows: number[];
+  rows?: number[];
+  expression?: string;
   answer: number;
 }
 
 export interface Question {
   id: number;
   originalId: number;
-  rows: number[];
+  rows?: number[];
+  expression?: string;
   answer: number;
 }
 
